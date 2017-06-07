@@ -14,13 +14,13 @@ var (
 	outputExt  string
 	outputPath string
 	pkgPath    string
-	tmplName   string
+	tmplPath   string
 )
 
 func main() {
 	flag.StringVar(&outputExt, "ext", "", "output files extension")
 	flag.StringVar(&outputPath, "o", ".", "output directory path")
-	flag.StringVar(&tmplName, "template", "markdown", "template name")
+	flag.StringVar(&tmplPath, "template", "", "path to template file")
 	flag.Usage = printUsage
 	flag.Parse()
 
@@ -51,9 +51,8 @@ func render() error {
 	}
 
 	// Ensure requested template exists
-	tmplPath := filepath.Join(filepath.Dir(os.Args[0]), "templates", tmplName+".tmpl")
 	if _, err := os.Stat(tmplPath); os.IsNotExist(err) {
-		return fmt.Errorf("unknown template %q", tmplName)
+		return fmt.Errorf("unable to use template file: %s", err)
 	}
 
 	// Loop through sections to generate output files
