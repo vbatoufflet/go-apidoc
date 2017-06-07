@@ -1,0 +1,32 @@
+# {{ .DisplayName }}
+{{ if .Description }}
+{{ .Description }}{{ end }}{{ range $e := .Endpoints }}{{ range $m := $e.Methods }}
+## {{ $m.Summary }}
+
+```
+{{ $m.Method }} {{ $e.Path }}
+```
+
+{{ $m.Description }}
+{{ if $m.Parameters }}
+### Parameters
+
+| Name | Type | In | Description |
+| --- | --- | --- | --- |{{ range $p := $m.Parameters }}
+| {{ $p.Name }}{{ if $p.Required }}<br>**required**{{ end }} | `{{ $p.Type }}` | `{{ $p.In }}` | {{ $p.Description }}{{ if $p.Default }}<br>Default: `{{ $p.Default }}`{{ end }} |{{ end }}
+{{ end }}{{ if $m.Responses }}
+### Responses
+{{ range $code, $r := $m.Responses }}{{ if $r }}{{ if $r.Headers }}
+Headers:
+
+| Name | Description |
+| --- | --- |{{ range $k, $v := $r.Headers }}
+| {{ $k }} | {{ $v }} | {{ end }}
+{{ end }}{{ end }}
+```headers
+Status: {{ $code }} {{ status_text $code }}{{ if $r }}{{ if $r.Example }}{{ range $k, $v := $r.Example.Headers }}
+{{ $k }}: {{ $v }}{{ end }}{{ end }}
+```{{ if $r.Example }}
+```{{ $r.Example.Format }}
+{{ $r.Example.Body }}{{ end }}{{ end }}
+```{{ end }}{{ end }}{{ end }}{{ end }}
